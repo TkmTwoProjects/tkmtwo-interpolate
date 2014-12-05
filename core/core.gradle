@@ -1,0 +1,48 @@
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'checkstyle'
+
+
+
+dependencies {
+  compile "com.tkmtwo:tkmtwo-common:${depVersionTkmTwoCommon}"
+  compile "org.slf4j:slf4j-api:${depVersionSlf4J}"
+
+  runtime "ch.qos.logback:logback-classic:${depVersionLogback}"
+  runtime "ch.qos.logback:logback-core:${depVersionLogback}"
+  runtime "org.slf4j:jcl-over-slf4j:${depVersionSlf4J}"
+  runtime "org.slf4j:jul-to-slf4j:${depVersionSlf4J}"
+  runtime "org.slf4j:log4j-over-slf4j:${depVersionSlf4J}"
+
+  testCompile "junit:junit:${depVersionJunit}"
+
+}
+
+
+checkstyle {
+  configFile = new File(rootDir, "config/checkstyle.xml")
+  sourceSets = [sourceSets.main, sourceSets.test]
+  //sourceSets = [sourceSets.main]
+}
+
+jar {
+  baseName = rootProject.name
+  //appendix = project.name
+}
+
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      repository(url: "file://$buildDir/repo")
+      //repository(url: "file://$rootDir/../tkmtwo-mvn-repo/release")
+    }
+  }
+}
+
+
+configurations {
+  all*.exclude module: 'commons-logging'
+  all*.exclude module: 'log4j'
+}
